@@ -1,6 +1,8 @@
 import pytest
 
 from src import create_app, db
+from src.events.schemas import EventCreate
+from src.users.schemas import UserCreate
 from src.models import User, Event
 
 
@@ -14,15 +16,17 @@ def test_app():
 
 @pytest.fixture(scope="module")
 def new_user(test_app):
+    new_user = UserCreate(name="Guilherme", email="hire@me.com", password="TestUser123")
     with test_app.app_context():
-        user = User("Guilherme", "hire@me.com", "TestUser123")
+        user = User(**new_user.dict())
         yield user
 
 
 @pytest.fixture(scope="module")
-def new_event(test_app):
+def new_event(test_app, new_user):
+    new_event = EventCreate(name="Pycon", date="2021-01-09")
     with test_app.app_context():
-        event = Event("Pycon", "2021-01-09", "An awesome Python conference", 100)
+        event = Event(**new_event.dict(), organizer_id=new_user.id)
         yield event
 
 

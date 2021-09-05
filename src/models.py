@@ -1,6 +1,4 @@
 from flask import current_app
-from datetime import datetime
-from dateutil import parser
 
 from src import db, bcrypt
 
@@ -12,11 +10,12 @@ class User(db.Model):
     name = db.Column(db.String(64))
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String(60))
+    events = db.relationship("Event", backref="organizer", lazy="dynamic")
 
-    def __init__(self, name: str, email: str, password_plaintext: str):
+    def __init__(self, name: str, email: str, password: str):
         self.name = name
         self.email = email
-        self.password = self._generate_password_hash(password_plaintext)
+        self.password = self._generate_password_hash(password)
 
     def is_password_correct(self, password_plaintext: str) -> bool:
         return bcrypt.check_password_hash(self.password, password_plaintext)
@@ -46,22 +45,11 @@ class Event(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     description = db.Column(db.String, nullable=True)
     max_tickets = db.Column(db.Integer)
+    organizer_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     tickets = db.relationship("Ticket", backref="event", lazy="dynamic")
-
-    def __init__(
-        self, name: str, date: str, description: str = None, max_tickets: int = 0
-    ):
-        self.name = name
-        self.date = self.parse_date(date)
-        self.description = description
-        self.max_tickets = max_tickets
 
     def __repr__(self):
         return f"<Event: {self.name}>"
-
-    @staticmethod
-    def parse_date(date_string: str) -> datetime:
-        return parser.parse(date_string)
 
 
 class Ticket(db.Model):
