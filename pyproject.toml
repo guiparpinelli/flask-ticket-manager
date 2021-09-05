@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "flask-ticket-manager"
+version = "0.1.0"
+description = ""
+authors = ["Parpi"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Flask = "^2.0.1"
+flask-pydantic-spec = "^0.1.5"
+tinydb = "^4.5.1"
+python-dateutil = "^2.8.2"
+
+[tool.poetry.dev-dependencies]
+black = "^21.8b0"
+pytest = "^6.2.5"
+flake8 = "^3.9.2"
+httpie = "^2.4.0"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
