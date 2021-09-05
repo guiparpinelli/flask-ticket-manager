@@ -1,0 +1,35 @@
+#+title: Tought process
+#+author: Guilherme Parpinelli
+#+options: toc:nil
+
+* First look
+
+  About the models:
+  - ~User~
+    - ~name~
+    - ~email~
+    - ~password~ - make sure to hash it and create decrpyt method
+
+  - ~Event~
+    - ~name~
+    - ~date~
+    - ~description~ - optional
+    - ~max_tickets~ - will define the total of generated tickets
+    - ~organizer~ - relationship to parent ~User~
+    - ~organizer_id~ - foreign key to parent ~User~
+    - ~tickets~ - a list of generated tickets (one to many)
+  
+  - ~Ticket~
+    - ~id~
+    - ~redeemed~ - default `False`
+    - ~event~ - relationship to parent `Event`
+    - ~event_id~ - foreign key to parent `Event`
+    - ~owner_id~ - foreign key to parent `User`
+
+  I think this is a good place to start. Along with that, let's setup the core config.
+
+    
+* Setup
+
+  - Create `.env` file with `SECRET_APP_KEY` (generated with `secrets.token_bytes(32)`)
+  - Create config classes (`config.py`)
