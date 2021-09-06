@@ -32,3 +32,26 @@
 
   - Create ~.env~ file with ~SECRET_APP_KEY~ (generated with ~secrets.token_bytes(32)~)
   - Create config classes (~config.py~)
+
+** Routing
+
+  - Root (~Home~)
+    If user is not authenticated:
+      - ~/register~
+      - ~/login~
+
+    If is auth:
+      - ~/logout~
+      Render ~events.html~ with list of current events
+  
+  - Events
+    - ~/events/new~ - render new event form
+    - ~/events/:id~ - render event details and tickets
+
+    If user is the event admin:
+      - ~/events/:id/edit~ - render event edit form
+
+  - Tickets (API)
+    - ~/redeem/:id~
+      - ~GET~ - returns ~200 OK~ if ticket is not redeemed, ~410 GONE~ if has been redeemed
+      - ~POST~ - attempts to reedem ticket

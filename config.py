@@ -13,9 +13,9 @@ class Config(object):
     SECRET_KEY = os.getenv("SECRET_KEY", default="BAD_SECRET_KEY")
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
-        default=f"sqlite:///{os.path.join(BASEDIR, 'app.db')}",
+        default=f"sqlite:///{os.path.join(BASEDIR, 'instance', 'app.db')}",
     )
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     BCRYPT_LOG_ROUNDS = 15
     WTF_CSRF_ENABLED = True
     REMEMBER_COOKIE_DURATION = timedelta(days=14)
@@ -39,7 +39,7 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "TEST_DATABASE_URI",
-        default=f"sqlite:///{os.path.join(BASEDIR, 'test.db')}",
+        default=f"sqlite:///{os.path.join(BASEDIR, 'instance', 'test.db')}",
     )
     BCRYPT_LOG_ROUNDS = 4
     WTF_CSRF_ENABLED = False

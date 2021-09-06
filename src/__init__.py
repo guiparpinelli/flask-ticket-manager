@@ -2,13 +2,14 @@ import os
 import logging
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask.logging import default_handler
-from logging.handlers import RotatingFileHandler
 
 
 db = SQLAlchemy()
+db_migration = Migrate()
 bcrypt = Bcrypt()
 login = LoginManager()
 login.login_view = "users.login"
@@ -33,11 +34,12 @@ def initialize_extensions(app):
     # Since the application instance is now created, pass it to each Flask
     # extension instance to bind it to the Flask application instance (app)
     db.init_app(app)
+    db_migration.init_app(app, db)
     bcrypt.init_app(app)
     login.init_app(app)
 
     # Flask-Login configuration
-    from src.users import User
+    from src.models import User
 
     @login.user_loader
     def load_user(user_id):
@@ -46,12 +48,12 @@ def initialize_extensions(app):
 
 def register_blueprints(app):
     # Import the blueprints
-    # from src.users import users_blueprint
+    from src.users import users_blueprint
 
     # Since the application instance is now created, register each Blueprint
     # with the Flask application instance (app)
+    app.register_blueprint(users_blueprint)
     # app.register_blueprint(users_blueprint, url_prefix="/users")
-    ...
 
 
 def configure_logging(app):
