@@ -28,3 +28,32 @@ def test_valid_login(test_client, register_user):
         follow_redirects=True,
     )
     assert response.status_code == 200
+
+
+def test_valid_login(test_client, register_user):
+    response = test_client.post(
+        "/login",
+        data={
+            "email": "hire@me.com",
+            "password": "TestUser123",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+
+def test_valid_login_and_logout(test_client, register_user):
+    # Login
+    response = test_client.post(
+        "/login",
+        data={
+            "email": "hire@me.com",
+            "password": "TestUser123",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+    # Logout
+    response = test_client.get("/logout", follow_redirects=True)
+    assert response.status_code == 200
