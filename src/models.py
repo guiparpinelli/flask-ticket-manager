@@ -10,7 +10,7 @@ class User(db.Model):
     name = db.Column(db.String(64))
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String(60))
-    events = db.relationship("Event", backref="organizer", lazy="dynamic")
+    events = db.relationship("Event", backref="admin", lazy="dynamic")
 
     def __init__(self, name: str, email: str, password: str):
         self.name = name
@@ -52,7 +52,7 @@ class Event(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     description = db.Column(db.String, nullable=True)
     max_tickets = db.Column(db.Integer)
-    organizer_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    admin_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     tickets = db.relationship("Ticket", backref="event", lazy="dynamic")
 
     def __repr__(self):

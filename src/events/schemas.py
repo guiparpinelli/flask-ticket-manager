@@ -25,8 +25,7 @@ class EventCreate(EventBase):
 
 class Event(EventBase):
     id: int
-    organizer: User
-    organizer_id: int
+    admin_id: int
     tickets: Optional[List[Ticket]] = []
 
     class Config:

@@ -2,7 +2,7 @@ from src import db, models
 from src.users import schemas
 
 
-def get_user(user_id: int) -> models.User:
+def get_user_by_id(user_id: int) -> models.User:
     return db.session.query(models.User).filter(models.User.id == user_id).first()
 
 

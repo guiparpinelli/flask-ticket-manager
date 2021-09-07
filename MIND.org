@@ -8,20 +8,19 @@
     - *name*
     - *email*
     - *password* - make sure to hash it and create decrpyt method
+    - *events* - list of events that user is admin
 
   - *Event*
     - *name*
     - *date*
     - *description* - optional
     - *max_tickets* - will define the total of generated tickets
-    - *organizer* - relationship to parent ~User~
-    - *organizer_id* - foreign key to parent ~User~
+    - *admin_id* - foreign key to parent ~User~
     - *tickets* - a list of generated tickets (one to many)
   
   - *Ticket*
     - *id*
     - *redeemed* - default ~False~
-    - *event* - relationship to parent ~Event~
     - *event_id* - foreign key to parent ~Event~
     - *owner_id* - foreign key to parent ~User~
 
