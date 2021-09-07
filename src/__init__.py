@@ -1,11 +1,9 @@
 import os
-import logging
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-from flask.logging import default_handler
 
 
 db = SQLAlchemy()
@@ -25,7 +23,6 @@ def create_app():
 
     initialize_extensions(app)
     register_blueprints(app)
-    configure_logging(app)
     register_error_pages(app)
     return app
 
@@ -54,18 +51,6 @@ def register_blueprints(app):
     # with the Flask application instance (app)
     app.register_blueprint(users_blueprint)
     # app.register_blueprint(users_blueprint, url_prefix="/users")
-
-
-def configure_logging(app):
-    # Logging Configuration
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.INFO)
-    app.logger.addHandler(stream_handler)
-
-    # Remove the default logger configured by Flask
-    app.logger.removeHandler(default_handler)
-
-    app.logger.info("Starting the Flask Ticket Manager App...")
 
 
 def register_error_pages(app):

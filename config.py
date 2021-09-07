@@ -20,15 +20,9 @@ class Config(object):
     WTF_CSRF_ENABLED = True
     REMEMBER_COOKIE_DURATION = timedelta(days=14)
 
-    # Logging
-    LOG_TO_STDOUT = os.getenv("LOG_TO_STDOUT", default=False)
-
 
 class ProductionConfig(Config):
     FLASK_ENV = "prod"
-
-    # Logging
-    LOG_TO_STDOUT = os.getenv("LOG_TO_STDOUT", default=True)
 
 
 class DevelopmentConfig(Config):

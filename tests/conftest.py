@@ -2,7 +2,7 @@ import pytest
 
 from src import create_app, db
 from src.events.schemas import EventCreate
-from src.users.schemas import UserCreate
+from src.users.schemas import UserBase, UserCreate
 from src.models import User, Event
 
 
@@ -44,3 +44,22 @@ def test_client(test_app):
 
         with test_app.app_context():
             db.drop_all()
+
+
+@pytest.fixture(scope="module")
+def register_user(test_client):
+    user = UserCreate(name="Guilherme", email="hire@me.com", password="TestUser123")
+    test_client.post("/register", data={**user.dict()}, follow_redirects=True)
+    return
+
+
+@pytest.fixture(scope="function")
+def log_in_user(test_client, register_user):
+    test_client.post(
+        "/login",
+        data={"email": "hire@me.com", "password": "TestUser123"},
+        follow_redirects=True,
+    )
+    yield
+
+    test_client.get("/logout")
