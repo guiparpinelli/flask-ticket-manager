@@ -2,8 +2,17 @@ import pytest
 
 from src import create_app, db
 from src.events.schemas import EventCreate
-from src.users.schemas import UserBase, UserCreate
+from src.users.schemas import UserCreate
 from src.models import User, Event
+
+
+@pytest.fixture(scope="module")
+def test_app_context():
+    flask_app = create_app()
+    flask_app.config.from_object("config.TestingConfig")
+
+    with flask_app.app_context():
+        yield
 
 
 @pytest.fixture(scope="module")
