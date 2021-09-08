@@ -1,4 +1,6 @@
-from datetime import date, timedelta
+import pytest
+import random
+from datetime import date
 
 from src.users.schemas import UserCreate
 from src.events.schemas import EventCreate, EventUpdate
@@ -10,6 +12,8 @@ from src.events.crud import (
     get_event_by_id,
     get_event_by_name,
     update_max_tickets,
+    add_event_tickets,
+    reduce_event_tickets,
 )
 from src.tickets.crud import get_ticket_status_by_id
 
@@ -64,17 +68,43 @@ def test_get_event_by_id_returns_db_event_obj(events):
     assert db_event.id == events[0].id
 
 
-# FIXME
-# def test_update_max_tickets_successefully_updates_db_event(test_app_context, events):
-#     new_event = EventUpdate(max_tickets=events[0].max_tickets + 10)
-#     obj_in = new_event.dict(exclude_unset=True)
-#     updated_event = update_max_tickets(events[0], obj_in)
-#     assert updated_event.max_tickets != events[0].max_tickets
-#     assert updated_event.max_tickets == obj_in.get("max_tickets")
-#     assert updated_event.max_tickets == events[0].max_tickets + 10
+def test_update_max_tickets_successefully_updates_db_event(make_event):
+    db_event = make_event(max_tickets=0)
+    assert db_event.max_tickets == 0
+    new_event = EventUpdate(max_tickets=10)
+    obj_in = new_event.dict(exclude_unset=True)
+    updated_event = update_max_tickets(db_event, obj_in)
+    assert updated_event.max_tickets == 10
 
 
 def test_get_ticket_status_by_id_returns_redeem_status(events):
     ticket = events[0].tickets[0]
     is_redeemed = get_ticket_status_by_id(ticket.id)
     assert not is_redeemed
+
+
+def test_add_event_tickets_adds_total_difference_of_tickets_to_events_ticket_list(
+    make_event,
+):
+    db_event = make_event(max_tickets=5)
+    assert db_event.max_tickets == 5
+    assert len(db_event.tickets) == 5
+    db_event.max_tickets = 10
+    updated_ticket_list = add_event_tickets(db_event)
+    # TODO assertions
+
+
+def test_reduce_event_tickets_raise_error_when_trying_to_reduce_below_total_of_redeemed_tickets(
+    make_event, users
+):
+    db_event = make_event(max_tickets=5)
+    assert db_event.max_tickets == 5
+    assert len(db_event.tickets) == 5
+
+    for ticket in db_event.tickets:
+        ticket.redeem_ticket(random.choice(users).id)
+
+    db_event.max_tickets = 1
+
+    with pytest.raises(ValueError):
+        reduce_event_tickets(db_event)

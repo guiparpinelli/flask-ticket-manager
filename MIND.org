@@ -54,3 +54,8 @@
     - ~/redeem/:id~
       - ~GET~ - returns ~200 OK~ if ticket is not redeemed, ~410 GONE~ if has been redeemed
       - ~POST~ - attempts to reedem ticket
+
+** Some known restrictions
+
+  [ ] An event cannot reduce ~max_tickets~ below the total number of already redeemed tickets
+  [ ] A ticket cannot be redeemed without an ~user.id~
