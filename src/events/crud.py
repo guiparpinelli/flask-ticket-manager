@@ -35,5 +35,12 @@ def create_event(event: schemas.EventCreate, user_id: int) -> models.Event:
     return db_event
 
 
-def update_max_tickets(db_event: models.Event, max_tickets: int) -> models.Event:
-    pass
+def update_max_tickets(
+    db_event: models.Event, obj_in: schemas.EventUpdate
+) -> models.Event:
+    for key, value in obj_in.items():
+        setattr(db_event, key, value)
+    db.session.add(db_event)
+    db.session.commit()
+    db.session.refresh(db_event)
+    return db_event

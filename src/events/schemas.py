@@ -23,10 +23,6 @@ class EventCreate(EventBase):
     pass
 
 
-class EventUpdate(EventBase):
-    max_tickets: int
-
-
 class Event(EventBase):
     id: int
     admin_id: int
@@ -34,3 +30,10 @@ class Event(EventBase):
 
     class Config:
         orm_mode = True
+
+
+class EventUpdate(EventBase):
+    name: Optional[str] = None
+    date: Optional[datetime] = None
+    description: Optional[str] = None
+    max_tickets: Optional[int] = None

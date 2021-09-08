@@ -1,9 +1,16 @@
 from datetime import date, timedelta
 
 from src.users.schemas import UserCreate
-from src.events.schemas import EventCreate
+from src.events.schemas import EventCreate, EventUpdate
 from src.users.crud import create_user, get_user_by_id, get_user_by_email
-from src.events.crud import create_event, get_events, get_events_by_datetime_period
+from src.events.crud import (
+    create_event,
+    get_events,
+    get_events_by_datetime_period,
+    get_event_by_id,
+    get_event_by_name,
+    update_max_tickets,
+)
 
 
 def test_get_user_by_id(test_app_context, users):
@@ -51,3 +58,21 @@ def test_get_events_by_datetime_period_returns_list_of_events_between_dates(
 
     assert e is not None
     assert len(e) == len(events)
+
+
+def test_get_event_by_id_returns_db_event_obj(test_app_context, events):
+    db_event = get_event_by_id(events[0].id)
+    assert db_event.id == events[0].id
+
+
+# FIXME
+def test_update_max_tickets_successefully_updates_db_event(test_app_context, events):
+    new_event = EventUpdate(max_tickets=events[0].max_tickets + 10)
+    obj_in = new_event.dict(exclude_unset=True)
+    updated_event = update_max_tickets(events[0], obj_in)
+    import pdb
+
+    pdb.set_trace()
+    assert updated_event.max_tickets != events[0].max_tickets
+    assert updated_event.max_tickets == obj_in.get("max_tickets")
+    assert updated_event.max_tickets == events[0].max_tickets + 10
