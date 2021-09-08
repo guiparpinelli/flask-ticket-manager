@@ -23,7 +23,7 @@ def get_events_by_datetime_period(
 ) -> List[models.Event]:
     return (
         db.session.query(models.Event)
-        .filter(and_(models.Event.date >= start_date and models.Event.date <= end_date))
+        .filter(and_(models.Event.date >= start_date, models.Event.date <= end_date))
         .all()
     )
 

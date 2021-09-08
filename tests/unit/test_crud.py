@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 
 from src.users.schemas import UserCreate
 from src.events.schemas import EventCreate
@@ -43,11 +43,11 @@ def test_create_event_writes_to_db(test_app_context, users):
 def test_get_events_by_datetime_period_returns_list_of_events_between_dates(
     test_app_context, events
 ):
-    # Events factory creates events with current year dates
-    start = datetime.datetime.now()
-    end = start + timedelta(days=30)
-
+    # Events factory creates events with current year date
+    this_year = date.today().year
+    start = date(this_year, 1, 1)
+    end = date(this_year, 12, 31)
     e = get_events_by_datetime_period(start, end)
-    import pdb
 
-    pdb.set_trace()
+    assert e is not None
+    assert len(e) == len(events)
