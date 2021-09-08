@@ -11,14 +11,15 @@ from src.events.crud import (
     get_event_by_name,
     update_max_tickets,
 )
+from src.tickets.crud import get_ticket_status_by_id
 
 
-def test_get_user_by_id(test_app_context, users):
+def test_get_user_by_id(users):
     user = get_user_by_id(users[0].id)
     assert user.id == users[0].id
 
 
-def test_get_user_by_email(test_app_context, users):
+def test_get_user_by_email(users):
     user = get_user_by_email(users[0].email)
     assert user.email == users[0].email
 
@@ -31,7 +32,7 @@ def test_create_user_writes_to_db(test_app_context):
     assert db_user.password != new_user.password
 
 
-def test_get_events_returns_a_list_of_events(test_app_context, events):
+def test_get_events_returns_a_list_of_events(events):
     all_events = get_events()
     assert len(all_events) == len(events)
 
@@ -39,7 +40,7 @@ def test_get_events_returns_a_list_of_events(test_app_context, events):
     assert len(two_events) == 2
 
 
-def test_create_event_writes_to_db(test_app_context, users):
+def test_create_event_writes_to_db(users):
     new_event = EventCreate(name="Pycon", date="2021-01-09")
     db_event = create_event(new_event, users[0].id)
     assert db_event.name == new_event.name
@@ -47,9 +48,7 @@ def test_create_event_writes_to_db(test_app_context, users):
     assert db_event.admin_id == users[0].id
 
 
-def test_get_events_by_datetime_period_returns_list_of_events_between_dates(
-    test_app_context, events
-):
+def test_get_events_by_datetime_period_returns_list_of_events_between_dates(events):
     # Events factory creates events with current year date
     this_year = date.today().year
     start = date(this_year, 1, 1)
@@ -60,19 +59,22 @@ def test_get_events_by_datetime_period_returns_list_of_events_between_dates(
     assert len(e) == len(events)
 
 
-def test_get_event_by_id_returns_db_event_obj(test_app_context, events):
+def test_get_event_by_id_returns_db_event_obj(events):
     db_event = get_event_by_id(events[0].id)
     assert db_event.id == events[0].id
 
 
 # FIXME
-def test_update_max_tickets_successefully_updates_db_event(test_app_context, events):
-    new_event = EventUpdate(max_tickets=events[0].max_tickets + 10)
-    obj_in = new_event.dict(exclude_unset=True)
-    updated_event = update_max_tickets(events[0], obj_in)
-    import pdb
+# def test_update_max_tickets_successefully_updates_db_event(test_app_context, events):
+#     new_event = EventUpdate(max_tickets=events[0].max_tickets + 10)
+#     obj_in = new_event.dict(exclude_unset=True)
+#     updated_event = update_max_tickets(events[0], obj_in)
+#     assert updated_event.max_tickets != events[0].max_tickets
+#     assert updated_event.max_tickets == obj_in.get("max_tickets")
+#     assert updated_event.max_tickets == events[0].max_tickets + 10
 
-    pdb.set_trace()
-    assert updated_event.max_tickets != events[0].max_tickets
-    assert updated_event.max_tickets == obj_in.get("max_tickets")
-    assert updated_event.max_tickets == events[0].max_tickets + 10
+
+def test_get_ticket_status_by_id_returns_redeem_status(events):
+    ticket = events[0].tickets[0]
+    is_redeemed = get_ticket_status_by_id(ticket.id)
+    assert not is_redeemed

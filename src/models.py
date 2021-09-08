@@ -1,3 +1,4 @@
+from datetime import date
 from flask import current_app
 
 from src import db, bcrypt
@@ -51,9 +52,27 @@ class Event(db.Model):
     name = db.Column(db.String(64))
     date = db.Column(db.DateTime, nullable=False)
     description = db.Column(db.String, nullable=True)
-    max_tickets = db.Column(db.Integer, default=0)
+    max_tickets = db.Column(db.Integer)
     admin_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    tickets = db.relationship("Ticket", backref="event", lazy="dynamic")
+    tickets = db.relationship("Ticket", backref="event", lazy=True)
+
+    def __init__(
+        self,
+        name: str,
+        date: date,
+        admin_id: int,
+        description: str = None,
+        max_tickets: int = 0,
+    ):
+        self.name = name
+        self.date = date
+        self.admin_id = admin_id
+        self.description = description
+        self.max_tickets = max_tickets
+        self.tickets = self._generate_event_tickets() if max_tickets > 0 else list()
+
+    def _generate_event_tickets(self):
+        return [Ticket(self.id) for _ in range(self.max_tickets)]
 
     def __repr__(self):
         return f"<Event: {self.name}>"
@@ -63,9 +82,14 @@ class Ticket(db.Model):
     __tablename__ = "tickets"
 
     id = db.Column(db.Integer, primary_key=True)
-    redeemed = db.Column(db.Boolean, default=False)
+    redeemed = db.Column(db.Boolean)
     event_id = db.Column(db.Integer, db.ForeignKey("events.id"))
     owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+
+    def __init__(self, event_id: int, owner_id: int = None):
+        self.redeemed = False
+        self.event_id = event_id
+        self.owner_id = owner_id
 
     # TODO add constraints to prevent redeemed to be True if owner_id is None
 
@@ -75,3 +99,7 @@ class Ticket(db.Model):
     @property
     def is_redeemed(self) -> bool:
         return self.redeemed
+
+    def redeem_ticket(self, user_id: int) -> None:
+        self.redeemed = True
+        self.owner_id = user_id

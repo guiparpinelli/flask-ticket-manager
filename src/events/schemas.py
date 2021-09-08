@@ -36,4 +36,4 @@ class EventUpdate(EventBase):
     name: Optional[str] = None
     date: Optional[datetime] = None
     description: Optional[str] = None
-    max_tickets: Optional[int] = None
+    max_tickets: Optional[int] = 0

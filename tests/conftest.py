@@ -46,6 +46,14 @@ def events(test_app_context):
 
 
 @pytest.fixture
+def make_event(test_app_context):
+    def _make_event(**kwargs):
+        return factories.EventFactory.create(**kwargs)
+
+    yield _make_event
+
+
+@pytest.fixture
 def register_user(test_client):
     user = UserCreate(name="Guilherme", email="hire@me.com", password="TestUser123")
     test_client.post("/register", data={**user.dict()}, follow_redirects=True)

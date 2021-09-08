@@ -3,16 +3,16 @@ from pydantic import BaseModel
 
 
 class TicketBase(BaseModel):
-    redeemed: bool = False
+    event_id: int
 
 
-class TicketCreate(TicketBase):
-    pass
+class TicketUpdate(TicketBase):
+    redeemed: bool
 
 
 class Ticket(TicketBase):
     id: int
-    event_id: int
+    redeemed: bool = False
     owner_id: Optional[int] = None
 
     class Config:
