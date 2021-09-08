@@ -22,7 +22,6 @@ def test_create_user_writes_to_db(test_app_context):
     assert db_user.password != new_user.password
 
 
-# TODO create a event factory
 def test_get_events_returns_a_list_of_events(test_app_context, events):
     all_events = get_events()
     assert len(all_events) == len(events)
