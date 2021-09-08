@@ -51,7 +51,7 @@ class Event(db.Model):
     name = db.Column(db.String(64))
     date = db.Column(db.DateTime, nullable=False)
     description = db.Column(db.String, nullable=True)
-    max_tickets = db.Column(db.Integer)
+    max_tickets = db.Column(db.Integer, default=0)
     admin_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     tickets = db.relationship("Ticket", backref="event", lazy="dynamic")
 
