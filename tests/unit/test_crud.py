@@ -1,7 +1,9 @@
+from datetime import datetime, timedelta
+
 from src.users.schemas import UserCreate
 from src.events.schemas import EventCreate
 from src.users.crud import create_user, get_user_by_id, get_user_by_email
-from src.events.crud import create_event, get_events
+from src.events.crud import create_event, get_events, get_events_by_datetime_period
 
 
 def test_get_user_by_id(test_app_context, users):
@@ -36,3 +38,16 @@ def test_create_event_writes_to_db(test_app_context, users):
     assert db_event.name == new_event.name
     assert db_event.date == new_event.date
     assert db_event.admin_id == users[0].id
+
+
+def test_get_events_by_datetime_period_returns_list_of_events_between_dates(
+    test_app_context, events
+):
+    # Events factory creates events with current year dates
+    start = datetime.datetime.now()
+    end = start + timedelta(days=30)
+
+    e = get_events_by_datetime_period(start, end)
+    import pdb
+
+    pdb.set_trace()

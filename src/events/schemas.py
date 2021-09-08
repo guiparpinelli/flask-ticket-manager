@@ -23,6 +23,10 @@ class EventCreate(EventBase):
     pass
 
 
+class EventUpdate(EventBase):
+    max_tickets: int
+
+
 class Event(EventBase):
     id: int
     admin_id: int
