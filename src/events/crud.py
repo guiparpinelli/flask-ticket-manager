@@ -35,7 +35,7 @@ def create_event(event: schemas.EventCreate, user_id: int) -> models.Event:
     return db_event
 
 
-def add_event_tickets(db_event: models.Event) -> models.Event:
+def add_event_tickets(db_event: models.Event) -> List[models.Ticket]:
     current_tickets = list(db_event.tickets)
     difference = db_event.max_tickets - len(current_tickets)
     new_tickets_list = current_tickets + [
@@ -44,20 +44,24 @@ def add_event_tickets(db_event: models.Event) -> models.Event:
     db_event.tickets = new_tickets_list
     db.session.commit()
     db.session.refresh(db_event)
-    return db_event
+    return db_event.tickets
 
 
-def reduce_event_tickets(db_event: models.Event) -> models.Event:
+def reduce_event_tickets(db_event: models.Event) -> List[models.Ticket]:
     redeemed_tickets = list(filter(lambda x: x.is_redeemed, db_event.tickets))
     if db_event.max_tickets < len(redeemed_tickets):
         raise ValueError(
             f"Cannot reduce max tickets below total of currently redeemed tickets: {len(redeemed_tickets)}"
         )
-    new_tickets_list = redeemed_tickets + [not t.is_redeemed for t in db_event.tickets]
+    difference = db_event.max_tickets - len(redeemed_tickets)
+    new_tickets_list = (
+        redeemed_tickets
+        + list(filter(lambda x: not x.is_redeemed, db_event.tickets))[:difference]
+    )
     db_event.tickets = new_tickets_list
     db.session.commit()
     db.session.refresh(db_event)
-    return db_event
+    return db_event.tickets
 
 
 def update_max_tickets(

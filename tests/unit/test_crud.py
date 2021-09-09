@@ -108,3 +108,20 @@ def test_reduce_event_tickets_raise_error_when_trying_to_reduce_below_total_of_r
 
     with pytest.raises(ValueError):
         reduce_event_tickets(db_event)
+
+
+def test_reduce_event_tickets_reduces_tickets_to_new_max_tickets(make_event, users):
+    db_event = make_event(max_tickets=5)
+    assert db_event.max_tickets == 5
+    assert len(db_event.tickets) == 5
+
+    for ticket in db_event.tickets[:2]:
+        ticket.redeem_ticket(random.choice(users).id)
+
+    db_event.max_tickets = 4
+    updated_ticket_list = reduce_event_tickets(db_event)
+
+    assert len(updated_ticket_list) == 4
+    assert updated_ticket_list[0].is_redeemed
+    assert updated_ticket_list[1].is_redeemed
+    assert not updated_ticket_list[2].is_redeemed

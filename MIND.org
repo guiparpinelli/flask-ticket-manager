@@ -57,5 +57,6 @@
 
 ** Some known restrictions
 
-  - [ ] An event cannot reduce ~max_tickets~ below the total number of already redeemed tickets
-  - [ ] A ticket cannot be redeemed without an ~user.id~
+  - [x] An event cannot reduce ~max_tickets~ below the total number of already redeemed tickets
+  - [-] A ticket cannot be redeemed without an ~user.id~
+    + [ ] Add check constraints to ~Ticket~ table
