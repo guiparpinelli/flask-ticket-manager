@@ -15,7 +15,11 @@ from src.events.crud import (
     add_event_tickets,
     reduce_event_tickets,
 )
-from src.tickets.crud import get_ticket_status_by_id
+from src.tickets.crud import (
+    get_ticket_status_by_id,
+    get_available_tickets_by_event_id,
+    get_redeemed_tickets_by_event_id,
+)
 
 
 def test_get_user_by_id(users):
@@ -131,3 +135,23 @@ def test_reduce_event_tickets_reduces_tickets_to_new_max_tickets(make_event, use
     assert updated_ticket_list[0].is_redeemed
     assert updated_ticket_list[1].is_redeemed
     assert not updated_ticket_list[2].is_redeemed
+
+
+def test_get_available_tickets_returns_event_not_redeemed_tickets(make_event, users):
+    db_event = make_event(max_tickets=5)
+
+    for ticket in db_event.tickets[:2]:
+        ticket.redeem_ticket(users[0].id)
+
+    available_tickets = get_available_tickets_by_event_id(db_event.id)
+    assert len(available_tickets) == 3
+
+
+def test_get_redeemed_tickets_returns_event_redeemed_tickets(make_event, users):
+    db_event = make_event(max_tickets=5)
+
+    for ticket in db_event.tickets[:2]:
+        ticket.redeem_ticket(users[0].id)
+
+    redeemed_tickets = get_redeemed_tickets_by_event_id(db_event.id)
+    assert len(redeemed_tickets) == 2
