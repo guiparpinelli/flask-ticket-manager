@@ -68,6 +68,11 @@ def test_get_event_by_id_returns_db_event_obj(events):
     assert db_event.id == events[0].id
 
 
+def test_get_event_by_name_returns_db_event_obj(events):
+    db_event = get_event_by_name(events[0].name)
+    assert db_event.name == events[0].name
+
+
 def test_update_max_tickets_successefully_updates_db_event(make_event):
     db_event = make_event(max_tickets=0)
     assert db_event.max_tickets == 0

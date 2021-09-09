@@ -19,3 +19,12 @@ def get_redeemed_tickets_by_event_id(event_id: int) -> List[models.Ticket]:
         .filter(models.Ticket.is_redeemed)
         .all()
     )
+
+
+def get_available_tickets_by_event_id(event_id: int) -> List[models.Ticket]:
+    return (
+        db.session.query(models.Ticket)
+        .filter(models.Ticket.event_id == event_id)
+        .filter(not models.Ticket.is_redeemed)
+        .all()
+    )
