@@ -90,8 +90,9 @@ def test_add_event_tickets_adds_total_difference_of_tickets_to_events_ticket_lis
     assert db_event.max_tickets == 5
     assert len(db_event.tickets) == 5
     db_event.max_tickets = 10
-    updated_ticket_list = add_event_tickets(db_event)
-    # TODO assertions
+    add_event_tickets(db_event)
+    assert db_event.max_tickets == 10
+    assert len(db_event.tickets) == 10
 
 
 def test_reduce_event_tickets_raise_error_when_trying_to_reduce_below_total_of_redeemed_tickets(
