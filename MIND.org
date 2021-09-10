@@ -44,11 +44,11 @@
       Render ~events.html~ with list of current events
   
   - Events
-    - ~/events/new~ - render new event form
-    - ~/events/:id~ - render event details and tickets
+    - ~/event/new~ - render new event form
+    - ~/event/:name~ - render event details and tickets
 
     If user is the event admin:
-      - ~/events/:id/edit~ - render event edit form
+      - ~/event/:name/edit~ - render event edit form
 
   - Tickets (API)
     - ~/redeem/:id~
