@@ -1,4 +1,4 @@
-from datetime import date
+import datetime
 from flask import current_app
 
 from src import db, bcrypt
@@ -59,7 +59,7 @@ class Event(db.Model):
     def __init__(
         self,
         name: str,
-        date: date,
+        date: datetime.date,
         admin_id: int,
         description: str = None,
         max_tickets: int = 0,
